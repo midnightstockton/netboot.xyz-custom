@@ -1,12 +1,22 @@
 #!ipxe
-###
-### netboot.xyz-custom menu
-###
 
-:start
-echo Hello world!
-sleep 10
-goto custom_exit
+:mainmenu
+menu Custom Netboot Menu
+item arch   Boot Arch Linux (DNS Fixed)
+item debian Boot Debian (DNS Fixed)
+item shell  Drop to iPXE Shell
+choose --default arch --timeout 5000 selected
+goto ${selected}
 
-:custom_exit
-exit 0
+:arch
+kernel https://mirror.rackspace.com/archlinux/iso/2025.05.01/arch/x86_64/vmlinuz-linux archisobasedir=arch archiso_http_srv=https://mirror.rackspace.com/archlinux/iso/2025.05.01/arch ip=dhcp
+initrd https://mirror.rackspace.com/archlinux/iso/2025.05.01/arch/x86_64/initramfs-linux.img
+boot
+
+:debian
+kernel https://deb.debian.org/debian/dists/bookworm/main/installer-amd64/current/images/netboot/debian-installer/amd64/linux auto=true priority=critical ip=dhcp
+initrd https://deb.debian.org/debian/dists/bookworm/main/installer-amd64/current/images/netboot/debian-installer/amd64/initrd.gz
+boot
+
+:shell
+shell
